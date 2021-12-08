@@ -144,6 +144,7 @@ route add -net 10.7.6.0 netmask 255.255.255.0 gw 10.7.7.150
 
 
 ### IP DHCP
+#### DHCP Server
 * Konfigurasi pada JIPANGU ```/etc/default/isc-dhcp-server``` mengarah dari interface JIPANGU ke Water7
 ```
 INTERFACES="eth0"
@@ -180,6 +181,37 @@ subnet 10.7.4.0 netmask 255.255.254.0 {
     option broadcast-address 10.7.5.255;
     option domain-name-servers 10.7.7.130;
 }
+```
+
+#### DHCP Relay
+* FOOSHA, WATER7, GUANHAO
+Tambahkan konfigurasi pada ``` /etc/default/isc-dhcp-relay ```
+```
+SERVERS="10.7.7.131"
+INTERFACES="eth0 eth1 eth2 eth3"
+OPTIONS=
+```
+Tambahkan konfigurasi pada ``` /etc/sysctl.conf ```
+```
+net.ipv4.ip_forward=1
+```
+
+#### DNS
+* DORIKI
+Tambahkan konfigurasi pada ```/etc/bind/named.conf.options```
+```
+options {
+        directory "/var/cache/bind";
+
+        forwarders {
+                192.168.122.1;
+        };
+
+        // dnssec-validation auto;
+        allow-query{any;};
+        auth-nxdomain no;
+        listen-on-v6 { any; };
+};
 ```
 
 ### NOMOR 1
